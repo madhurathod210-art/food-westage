@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Food Wastage - Production-ready modern web platform connecting surplus food with community refrigerators and volunteers with IoT telemetry, QR safety passports, and voice accessibility.">
+  <title>Food Wastage | Share Food. Spread Hope.</title>
+  
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  
+  <!-- Leaflet.js Interactive Maps CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Three.js 3D WebGL Engine CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- External CDN: QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <!-- Full-Page 3D Floating Food & Eco Particle Canvas -->
+  <canvas id="fullPage3dCanvas" class="fullpage-3d-canvas" aria-hidden="true"></canvas>
+
+  <!-- ========================================================================
+       1. Header & Glassmorphic Navigation Bar
+       ======================================================================== -->
+  <header class="site-header" role="banner">
+    <div class="container navbar">
+      <a href="#home" class="brand-logo" aria-label="Food Wastage Home">
+        <span class="brand-icon-wrapper">
+          <img src="assets/logo.png" alt="Food Wastage Logo" class="brand-logo-img">
+        </span>
+        <span class="brand-text" data-i18n="brandName">Food Wastage</span>
+      </a>
+
+      <!-- Language Switcher & Controls -->
+      <div class="header-right-controls">
+        <!-- Live Day, Date & Time Real-time Clock Widget -->
+        <div class="live-datetime-badge" id="liveDateTimeBadge" title="Live System Clock (Day, Date & Time)">
+          <span class="live-clock-pulse" aria-hidden="true"></span>
+          <span class="live-clock-icon" aria-hidden="true">🕒</span>
+          <div class="live-datetime-text" id="currentDateDisplay">Loading live date...</div>
+        </div>
+
+        <div class="lang-selector-wrap">
+          <span class="lang-globe-icon" aria-hidden="true">🌐</span>
+          <select id="langSelect" class="lang-select-dropdown" aria-label="Select Language">
+            <option value="en">English (EN)</option>
+            <option value="te">తెలుగు (Telugu - TE)</option>
+          </select>
+        </div>
+
+        <!-- Mobile Hamburger Button -->
+        <button 
+          class="hamburger-toggle" 
+          id="navToggle" 
+          type="button"
+          aria-label="Toggle navigation menu" 
+          aria-expanded="false" 
+          aria-controls="navMenu">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav id="primaryNavigation" aria-label="Primary navigation">
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="#home" class="nav-link active" data-view="home" data-i18n="navHome">Home</a></li>
+          <li><a href="#find-food" class="nav-link" data-view="find-food" data-i18n="navFindFood">Find Food</a></li>
+          <li><a href="#donate" class="nav-link" data-view="donate" data-i18n="navDonate">Donate</a></li>
+          <li><a href="#fridges" class="nav-link" data-view="fridges" data-i18n="navFridges">Fridges, Freezers &amp; IoT</a></li>
+          <li><a href="#volunteer" class="nav-link" data-view="volunteer" data-i18n="navVolunteer">Volunteer Dispatch</a></li>
+          <li><a href="#contact" class="nav-link" data-view="contact" data-i18n="navContact">Contact &amp; Support</a></li>
+          <li><a href="#admin" class="nav-link" data-view="admin" data-i18n="navAdmin">Admin Portal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       2. Main Content Area (SPA Hash-Driven Views)
+       ======================================================================== -->
+  <main class="main-content" id="mainContent" role="main">
+
+    <!-- ----------------------------------------------------------------------
+         VIEW 1: #view-home (Hero, Dynamic Stats, Calculator, Leaderboard)
+         ---------------------------------------------------------------------- -->
+    <section id="view-home" class="app-view active-view" aria-label="Home Section">
+      
+      <!-- Modern Hero Banner -->
+      <div class="hero-section">
+        <div class="container hero-grid">
+          <div class="hero-content">
+            <div class="hero-tag-wrap">
+              <div class="hero-tag">
+                <span>🍃</span> <span data-i18n="heroTag">IoT-Connected Smart Food Rescue Network</span>
+              </div>
+              <div class="hero-live-time-chip" title="Live network synchronization time">
+                <span class="pulse-dot" aria-hidden="true"></span>
+                <span>Live Sync:</span> <strong id="heroLiveDate"></strong>
+              </div>
+            </div>
+            <h1 class="hero-title">
+              <span data-i18n="heroTitle1">Share Food.</span> <br><span class="highlight-green" data-i18n="heroTitle2">Spread Hope.</span>
+            </h1>
+            <p class="hero-subtitle" data-i18n="heroSubtitle">
+              Wholesome surplus food belongs on neighborhood tables, not in landfills. Connect restaurants, grocers, volunteer drivers, and 24/7 public community refrigerators equipped with live IoT telemetry in real time.
+            </p>
+            <div class="btn-group">
+              <a href="#find-food" class="btn btn-primary btn-lg">
+                <span>🔍</span> <span data-i18n="btnFindFood">Find Available Food</span>
+              </a>
+              <a href="#donate" class="btn btn-secondary btn-lg">
+                <span>🍲</span> <span data-i18n="btnDonateFood">Donate Surplus Food</span>
+              </a>
+              <a href="#contact" class="btn btn-outline btn-lg">
+                <span>📞</span> <span data-i18n="btnHotline">24/7 Rescue Desk</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Interactive Multi-Scene 3D Food Rescue & Wastage Showcase -->
+          <div class="hero-3d-showcase-column">
+            <div class="hero-3d-card-wrapper">
+              
+              <!-- 3D Scene Mode Selector Tabs -->
+              <div class="hero-3d-scene-selector-bar">
+                <span class="scene-sel-label">3D Scene:</span>
+                <button type="button" class="btn-3d-scene active" data-scene="dont-waste" title="Don't Waste Food Rescue Plate & Bin Sculpture">
+                  🍽️ Don't Waste
+                </button>
+                <button type="button" class="btn-3d-scene" data-scene="planet" title="Global Eco Rescue Planet & Orbiting Food">
+                  🌍 Eco Planet
+                </button>
+                <button type="button" class="btn-3d-scene" data-scene="fridge" title="Smart Community Chiller & Deep Freezer">
+                  🧊 Smart Fridge
+                </button>
+                <button type="button" class="btn-3d-scene" data-scene="van" title="Volunteer Multi-Stop Rescue Dispatch Van">
+                  🚚 Dispatch Van
+                </button>
+              </div>
+
+              <!-- 3D Viewport Header -->
+              <div class="hero-3d-header">
+                <div class="hero-3d-badge">
+                  <span class="live-clock-pulse"></span>
+                  <span id="active3dSceneTitle">3D "DON'T WASTE FOOD" Rescue Diorama</span>
+                </div>
+                <div class="hero-3d-controls-mini">
+                  <button type="button" class="btn-3d-toggle active" id="btnActionSpecial3d" title="Perform scene-specific 3D action">
+                    ✨ Action
+                  </button>
+                  <button type="button" class="btn-3d-toggle" id="btnToggle3dOrbit" title="Toggle automatic 360° rotation">
+                    🔄 360° Orbit
+                  </button>
+                </div>
+              </div>
+
+              <!-- 3D Three.js WebGL Container -->
+              <div class="hero-3d-canvas-container" id="hero3dCanvasContainer" role="img" aria-label="Interactive 3D animation of food rescue diorama">
+                <!-- Three.js Canvas injected dynamically via js/hero-3d.js -->
+                <div class="hero-3d-hint-overlay">
+                  <span>🖱️ Drag to rotate 360° • Click objects to interact • Click anywhere to spawn 3D sparks</span>
+                </div>
+                <div class="hero-3d-food-tooltip" id="hero3dTooltip" style="display: none;"></div>
+              </div>
+
+              <!-- 3D Telemetry & Highlights Sub-Bar -->
+              <div class="hero-3d-footer">
+                <div class="hero-3d-stat" id="hero3dStatLeft">
+                  <span class="stat-icon">🍽️</span>
+                  <div>
+                    <strong id="statLeftTitle">Rescued Food Plate</strong>
+                    <small id="statLeftSub">Pizza, Tomato, Pear, Protein, Greens</small>
+                  </div>
+                </div>
+                <div class="hero-3d-stat" id="hero3dStatRight">
+                  <span class="stat-icon">🗑️</span>
+                  <div>
+                    <strong id="statRightTitle">Zero-Waste Receptacle</strong>
+                    <small id="statRightSub">"DON'T WASTE FOOD" Pledge</small>
+                  </div>
+                </div>
+                <a href="#donate" class="btn btn-primary btn-xs" style="margin-left: auto;">
+                  <span>🍲</span> Post Donation
+                </a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Real-Time Global Food Wastage & Rescue Impact Ticker -->
+      <div class="live-wastage-ticker-bar" aria-label="Live Wastage & Rescue Ticker">
+        <div class="container ticker-flex-wrap">
+          <div class="ticker-label-wrap">
+            <span class="pulse-beacon"></span>
+            <strong>Live Anti-Waste Stream:</strong>
+          </div>
+          <div class="ticker-items-carousel">
+            <div class="ticker-item">
+              <span>⚠️ Global Food Wasted Today:</span> <strong id="tickerGlobalWaste" class="text-danger">1,240,580 kg</strong>
+            </div>
+            <div class="ticker-sep">•</div>
+            <div class="ticker-item">
+              <span>🌱 Platform Rescued Today:</span> <strong id="tickerPlatformRescued" class="text-success">384.5 kg</strong>
+            </div>
+            <div class="ticker-sep">•</div>
+            <div class="ticker-item">
+              <span>🍲 Meals Provided:</span> <strong id="tickerMealsProvided">961 Meals</strong>
+            </div>
+            <div class="ticker-sep">•</div>
+            <div class="ticker-item">
+              <span>🌍 CO₂e Mitigated:</span> <strong id="tickerCo2Saved" class="text-emerald">961.2 kg</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platform Features Showcase Grid -->
+      <section class="platform-features-section" aria-label="Platform Core Features">
+        <div class="container">
+          <div class="section-header text-center">
+            <span class="section-badge">Platform Highlights</span>
+            <h2 class="section-title">Next-Gen Food Rescue &amp; Safety Technology</h2>
+            <p class="section-description">Empowering communities with real-time IoT hardware telemetry, automated QR safety passports, intelligent multi-stop dispatch, and ESG audit reporting.</p>
+          </div>
+
+          <div class="features-showcase-grid">
+            <div class="feature-showcase-card">
+              <div class="feature-icon-badge">🧊</div>
+              <div class="feature-badge-tag tag-iot">IoT Hardware</div>
+              <h3>Live Refrigerator Telemetry</h3>
+              <p>Dual-mode NodeMCU chillers with live temperature streams, door sensor state monitoring, and automated safety alert triggers.</p>
+              <a href="#fridges" class="feature-link">Explore Fridges &amp; Telemetry &rarr;</a>
+            </div>
+
+            <div class="feature-showcase-card">
+              <div class="feature-icon-badge">📱</div>
+              <div class="feature-badge-tag tag-qr">Instant QR</div>
+              <h3>QR Code Safety Passport</h3>
+              <p>Every donation generates a scannable, printable thermal safety passport containing batch IDs, allergen tags, and real-time freshness audit.</p>
+              <a href="#donate" class="feature-link">Create Food Donation &rarr;</a>
+            </div>
+
+            <div class="feature-showcase-card">
+              <div class="feature-icon-badge">🗺️</div>
+              <div class="feature-badge-tag tag-route">Multi-Stop</div>
+              <h3>Intelligent Route Optimizer</h3>
+              <p>Volunteer rescue drivers compile multiple pickup donor waypoints into a unified Google Maps navigation run terminating at local community fridges.</p>
+              <a href="#volunteer" class="feature-link">Open Volunteer Dispatch &rarr;</a>
+            </div>
+
+            <div class="feature-showcase-card">
+              <div class="feature-icon-badge">🔊</div>
+              <div class="feature-badge-tag tag-voice">Voice UI</div>
+              <h3>Multilingual Voice Readout</h3>
+              <p>Built-in Web Speech API audio synthesis for visually impaired community members and full English &amp; Telugu bilingual translation toggle.</p>
+              <a href="#find-food" class="feature-link">Browse &amp; Listen to Listings &rarr;</a>
+            </div>
+
+            <div class="feature-showcase-card">
+              <div class="feature-icon-badge">📜</div>
+              <div class="feature-badge-tag tag-csr">ESG &amp; CSR</div>
+              <h3>CSR Tax Exemption Audit</h3>
+              <p>Corporate donors receive printable, certified ESG audit statements verifying landfill diversion kilograms and greenhouse gas mitigation.</p>
+              <a href="#donate" class="feature-link">Generate CSR Statement &rarr;</a>
+            </div>
+
+            <div class="feature-showcase-card">
+              <div class="feature-icon-badge">🧮</div>
+              <div class="feature-badge-tag tag-calc">Eco Engine</div>
+              <h3>Dynamic Impact Calculator</h3>
+              <p>Interactive slider calculating meals provided, methane prevention, freshwater saved, and unlocking community gamification badges.</p>
+              <a href="#home" class="feature-link">Try Eco Impact Slider &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Real-Time Impact Summary Counters (Calculated from LocalStorage) -->
+      <div class="metrics-section" aria-label="Key Impact Metrics">
+        <div class="container">
+          <div class="metrics-grid">
+            
+            <article class="metric-card">
+              <div class="metric-icon-wrap" aria-hidden="true">⚖️</div>
+              <div class="metric-number" id="homeMetricRescued">0 kg</div>
+              <div class="metric-label" data-i18n="metricRescued">Total Rescued Food</div>
+              <p class="metric-subtext" data-i18n="metricRescuedSub">Edible surplus diverted from local landfills directly to neighborhood pantries.</p>
+            </article>
+
+            <article class="metric-card">
+              <div class="metric-icon-wrap" aria-hidden="true">🍲</div>
+              <div class="metric-number" id="homeMetricMeals">0</div>
+              <div class="metric-label" data-i18n="metricMeals">Nutritious Meals Provided</div>
+              <p class="metric-subtext" data-i18n="metricMealsSub">Wholesome food portions delivered based on standard 0.4 kg / meal benchmarks.</p>
+            </article>
+
+            <article class="metric-card">
+              <div class="metric-icon-wrap" aria-hidden="true">🌍</div>
+              <div class="metric-number" id="homeMetricCarbon">0 kg</div>
+              <div class="metric-label" data-i18n="metricCarbon">CO₂e Emissions Prevented</div>
+              <p class="metric-subtext" data-i18n="metricCarbonSub">Greenhouse gases mitigated by preventing anaerobic decomposition (2.5 kg CO₂e / kg).</p>
+            </article>
+
+            <article class="metric-card">
+              <div class="metric-icon-wrap" aria-hidden="true">💧</div>
+              <div class="metric-number" id="homeMetricWater">0 L</div>
+              <div class="metric-label" data-i18n="metricWater">Water Footprint Saved</div>
+              <p class="metric-subtext" data-i18n="metricWaterSub">Embedded agricultural freshwater conserved by preventing food disposal (1,000 L / kg).</p>
+            </article>
+
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Smart AI Food Shelf-Life & Safety Estimator Section -->
+      <section class="shelf-life-tool-section" aria-label="Smart Food Shelf-Life Estimator">
+        <div class="container">
+          <div class="section-header text-center">
+            <span class="section-badge">Food Safety Intelligence</span>
+            <h2 class="section-title">Smart AI Food Shelf-Life &amp; Safety Quality Estimator</h2>
+            <p class="section-description">
+              Prevent food spoilage before it happens. Calculate exact safe consumption windows, storage temperature danger zones, and generate instant QR Safety grades.
+            </p>
+          </div>
+
+          <div class="shelf-life-tool-card">
+            <div class="shelf-tool-grid">
+              
+              <!-- Input Form Controls -->
+              <div class="shelf-inputs-panel">
+                <h3 class="panel-heading">📦 Step 1: Select Surplus Food Parameters</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label for="estimatorCategory" class="form-label">Food Category &amp; Item Type:</label>
+                  <select id="estimatorCategory" class="form-control">
+                    <option value="cooked-rice">🍲 Cooked Rice, Biryani &amp; Grain Dishes</option>
+                    <option value="cooked-pasta">🍝 Cooked Pasta &amp; Mediterranean Bowls</option>
+                    <option value="cooked-meat">🍗 Prepared Poultry, Seafood &amp; Meat Curries</option>
+                    <option value="raw-produce">🥦 Fresh Cut Vegetables, Salads &amp; Fruits</option>
+                    <option value="bakery-bread">🥖 Sourdough, Bread Loaves &amp; Pastries</option>
+                    <option value="dairy-milk">🥛 Pasteurized Milk, Yogurt &amp; Soft Cheese</option>
+                  </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label for="estimatorStorage" class="form-label">Active Storage Method &amp; Temperature:</label>
+                  <select id="estimatorStorage" class="form-control">
+                    <option value="chilled-4">🧊 Chilled in Refrigerator (2°C – 4°C)</option>
+                    <option value="frozen-18">❄️ Sub-Zero Deep Freezer (-18°C)</option>
+                    <option value="room-temp">🌡️ Ambient Room Temperature (20°C – 25°C)</option>
+                    <option value="hot-hold">🔥 Hot Holding Unit (≥ 60°C)</option>
+                  </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label for="estimatorHours" class="form-label">Elapsed Time Since Preparation / Packaging:</label>
+                  <div style="display: flex; align-items: center; gap: 1rem;">
+                    <input type="range" id="estimatorHours" min="0" max="72" value="2" step="1" class="impact-slider" style="flex: 1;">
+                    <span class="hours-badge" id="estimatorHoursVal">2 hrs ago</span>
+                  </div>
+                </div>
+
+                <button type="button" class="btn btn-primary w-full" id="btnCalculateShelfLife">
+                  <span>🔬</span> Calculate Food Safety Grade &amp; Expiry
+                </button>
+              </div>
+
+              <!-- Output Diagnostic Card -->
+              <div class="shelf-results-panel" id="shelfResultsPanel">
+                <div class="safety-grade-header">
+                  <div>
+                    <span class="grade-label">QR Safety Quality Grade:</span>
+                    <div class="grade-pill grade-optimum" id="safetyGradePill">GRADE A+ (OPTIMUM FRESHNESS)</div>
+                  </div>
+                  <div class="grade-icon-box" id="safetyGradeIcon">✅</div>
+                </div>
+
+                <div class="safety-metrics-grid">
+                  <div class="safety-metric-box">
+                    <span class="metric-lbl">Remaining Safe Window:</span>
+                    <strong class="metric-val text-success" id="safeWindowVal">22 Hours Remaining</strong>
+                  </div>
+                  <div class="safety-metric-box">
+                    <span class="metric-lbl">Bacterial Danger Zone:</span>
+                    <strong class="metric-val" id="dangerZoneVal">SAFE (Below 4°C)</strong>
+                  </div>
+                </div>
+
+                <div class="safety-advice-box" id="safetyAdviceBox">
+                  <strong>Safe Handling Recommendation:</strong>
+                  <p id="safetyAdviceText">
+                    Excellent condition for immediate community distribution. Suitable for transfer to any public community refrigerator hub.
+                  </p>
+                </div>
+
+                <div class="shelf-card-actions">
+                  <a href="#donate" class="btn btn-secondary btn-sm w-full">
+                    <span>🚀</span> Donate &amp; Create QR Safety Label
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Community Gamification & Impact Leaderboard Section -->
+      <div class="section" style="padding-top: 1rem;">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge" data-i18n="badgeHallOfFame">Hall of Fame</span>
+            <h2 class="section-title" data-i18n="titleLeaderboard">Community Impact Leaderboard</h2>
+            <p class="section-description" data-i18n="descLeaderboard">
+              Recognizing our top corporate food donors and volunteer rescue drivers creating extraordinary climate and social impact.
+            </p>
+          </div>
+
+          <div class="leaderboard-grid">
+            <!-- Top Donors Table -->
+            <div class="leaderboard-card">
+              <div class="leaderboard-card-header">
+                <h3>🏆 <span data-i18n="lblTopDonors">Top Food Donors &amp; Kitchens</span></h3>
+                <span class="leaderboard-tag" data-i18n="lblMonthlyRank">Monthly Ranking</span>
+              </div>
+              <div class="table-responsive">
+                <table class="leaderboard-table">
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Partner / Donor</th>
+                      <th>Food Rescued</th>
+                      <th>CO₂e Saved</th>
+                    </tr>
+                  </thead>
+                  <tbody id="topDonorsTableBody">
+                    <!-- Populated dynamically via js/app.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Top Volunteers Table -->
+            <div class="leaderboard-card">
+              <div class="leaderboard-card-header">
+                <h3>🚗 <span data-i18n="lblTopVolunteers">Top Rescue Drivers</span></h3>
+                <span class="leaderboard-tag" data-i18n="lblVerifiedTrips">Verified Trips</span>
+              </div>
+              <div class="table-responsive">
+                <table class="leaderboard-table">
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Volunteer Driver</th>
+                      <th>Runs Completed</th>
+                      <th>Meals Delivered</th>
+                    </tr>
+                  </thead>
+                  <tbody id="topVolunteersTableBody">
+                    <!-- Populated dynamically via js/app.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Environmental Calculator Slider Section -->
+      <div class="section" style="padding-top: 2rem;">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge" data-i18n="badgeEcoCalc">Eco Calculator</span>
+            <h2 class="section-title" data-i18n="titleEcoCalc">Calculate Your Environmental &amp; Community Savings</h2>
+            <p class="section-description" data-i18n="descEcoCalc">
+              Move the slider to simulate the cumulative weekly impact of rescuing surplus meals in your neighborhood.
+            </p>
+          </div>
+
+          <div class="impact-calc-card">
+            <div class="impact-calc-inputs">
+              <label for="homeImpactSlider" class="impact-calc-label">
+                <span data-i18n="lblSurplusPerWeek">Rescued Surplus per Week:</span>
+                <strong id="homeImpactSliderVal">25 kg / week</strong>
+              </label>
+              <input type="range" id="homeImpactSlider" class="impact-slider" min="1" max="100" value="25" step="1" aria-label="Weekly rescued food in kilograms">
+              <div class="slider-ticks">
+                <span>1 kg (Meal)</span>
+                <span>25 kg (Café)</span>
+                <span>50 kg (Bistro)</span>
+                <span>75 kg (Bakery)</span>
+                <span>100 kg (Supermarket)</span>
+              </div>
+            </div>
+
+            <div class="impact-metrics-row">
+              <div class="impact-metric-item">
+                <div class="impact-icon-badge">🍲</div>
+                <div class="impact-val" id="calcMealsVal">63</div>
+                <div class="impact-name" data-i18n="calcMealsTitle">Meals Provided / Wk</div>
+                <div class="impact-sub">~0.4 kg per wholesome meal</div>
+              </div>
+
+              <div class="impact-metric-item">
+                <div class="impact-icon-badge">🌍</div>
+                <div class="impact-val" id="calcCo2Val">62.5 kg</div>
+                <div class="impact-name" data-i18n="calcCo2Title">CO₂e Mitigated / Wk</div>
+                <div class="impact-sub">2.5 kg CO₂e saved per kg food</div>
+              </div>
+
+              <div class="impact-metric-item">
+                <div class="impact-icon-badge">💧</div>
+                <div class="impact-val" id="calcWaterVal">25,000 L</div>
+                <div class="impact-name" data-i18n="calcWaterTitle">Water Conserved / Wk</div>
+                <div class="impact-sub">Agricultural water footprint</div>
+              </div>
+
+              <div class="impact-metric-item">
+                <div class="impact-icon-badge">🌳</div>
+                <div class="impact-val" id="calcTreesVal">2.9 Trees</div>
+                <div class="impact-name" data-i18n="calcTreesTitle">Yearly Tree Equivalent</div>
+                <div class="impact-sub">Annual carbon sequestration</div>
+              </div>
+            </div>
+
+            <!-- Community Milestone Badges System -->
+            <div class="milestone-badges-wrap">
+              <h4>🏆 <span data-i18n="titleMilestones">Community Impact Milestone Badges</span></h4>
+              <div class="milestones-grid" id="milestonesContainer">
+                <div class="milestone-badge unlocked" id="badgeSeedling">
+                  <span class="m-icon">🌱</span>
+                  <div class="m-info">
+                    <strong>Eco Seedling</strong>
+                    <small>10+ kg Rescued</small>
+                  </div>
+                </div>
+                <div class="milestone-badge unlocked" id="badgeGuardian">
+                  <span class="m-icon">🛡️</span>
+                  <div class="m-info">
+                    <strong>Community Guardian</strong>
+                    <small>25+ kg Rescued</small>
+                  </div>
+                </div>
+                <div class="milestone-badge" id="badgeCentury">
+                  <span class="m-icon">⚡</span>
+                  <div class="m-info">
+                    <strong>Century Saver</strong>
+                    <small>100+ kg Rescued</small>
+                  </div>
+                </div>
+                <div class="milestone-badge" id="badgeChampion">
+                  <span class="m-icon">👑</span>
+                  <div class="m-info">
+                    <strong>Zero-Waste Champion</strong>
+                    <small>500+ kg Rescued</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VIEW 2: #view-find-food (Live Expiry Timers, Voice Speech, Filters)
+         ---------------------------------------------------------------------- -->
+    <section id="view-find-food" class="app-view" aria-label="Find Food Section">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge" data-i18n="badgeLiveDirectory">Live Directory</span>
+            <h2 class="section-title" data-i18n="titleFindFood">Available Food Listings</h2>
+            <p class="section-description" data-i18n="descFindFood">
+              Browse wholesome surplus meals with real-time countdown timers, voice read-aloud assistance, and verified food safety compliance.
+            </p>
+          </div>
+
+          <!-- Filter & Search Toolbar -->
+          <div class="food-filter-toolbar">
+            <div class="filter-inputs-group">
+              
+              <!-- Search Input -->
+              <div class="search-box-wrap">
+                <span class="search-icon-symbol" aria-hidden="true">🔍</span>
+                <input 
+                  type="search" 
+                  id="foodSearchInput" 
+                  class="form-control" 
+                  placeholder="Search by food name, donor, or fridge..." 
+                  aria-label="Search available food listings">
+              </div>
+
+              <!-- Category Dropdown Filter -->
+              <div class="filter-select-wrap">
+                <select id="foodCategoryFilter" class="form-control" aria-label="Filter by category">
+                  <option value="all" data-i18n="optAllCategories">All Categories</option>
+                  <option value="Cooked Meals" data-i18n="optCookedMeals">🍲 Cooked Meals</option>
+                  <option value="Raw Produce" data-i18n="optRawProduce">🥦 Raw Produce</option>
+                  <option value="Bakery" data-i18n="optBakery">🥖 Bakery</option>
+                  <option value="Packaged" data-i18n="optPackaged">📦 Packaged</option>
+                </select>
+              </div>
+
+              <!-- Refrigerator Location Filter -->
+              <div class="filter-select-wrap">
+                <select id="fridgeLocationFilter" class="form-control" aria-label="Filter by refrigerator location">
+                  <option value="all" data-i18n="optAllFridges">All Locations / Fridges</option>
+                  <!-- Populated dynamically via js/app.js -->
+                </select>
+              </div>
+
+              <!-- Status Filter -->
+              <div class="filter-select-wrap">
+                <select id="foodStatusFilter" class="form-control" aria-label="Filter by status">
+                  <option value="all" data-i18n="optAllStatuses">All Statuses</option>
+                  <option value="Available" selected data-i18n="optAvailableOnly">🟢 Available Only</option>
+                  <option value="In Transit" data-i18n="optInTransit">🚗 In Transit</option>
+                  <option value="Reserved" data-i18n="optReserved">🟡 Reserved</option>
+                  <option value="Collected" data-i18n="optCollected">⚪ Collected</option>
+                  <option value="Expired" data-i18n="optExpired">🔴 Expired</option>
+                </select>
+              </div>
+
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <button type="button" class="btn btn-outline btn-sm" id="findFoodGpsBtn" title="Sort listings by nearest community fridge">
+                <span>📍</span> <span data-i18n="btnNearestFridge">Nearest Fridge (GPS)</span>
+              </button>
+              <a href="#donate" class="btn btn-secondary btn-sm">
+                <span>+</span> <span data-i18n="btnPostDonation">Post Donation</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Results Count Bar & View Switcher -->
+          <div class="results-meta-bar">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span data-i18n="lblVerifiedActive">Verified Surplus Listings:</span>
+              <span class="results-count-pill" id="foodResultsCount">Loading items...</span>
+              <span class="gps-active-badge" id="gpsActiveIndicator" style="display: none;">📍 GPS Active</span>
+            </div>
+            
+            <!-- View Mode Switcher -->
+            <div class="view-mode-toggle-group">
+              <button type="button" class="view-mode-btn active" id="btnViewSplit" title="Side-by-side Card List & Live Map">
+                <span>🔲</span> Split View
+              </button>
+              <button type="button" class="view-mode-btn" id="btnViewMap" title="Full-width Live GPS Map">
+                <span>🗺️</span> Map View
+              </button>
+              <button type="button" class="view-mode-btn" id="btnViewGrid" title="Card Grid Only">
+                <span>📋</span> Grid View
+              </button>
+            </div>
+          </div>
+
+          <div id="gpsStatusNotice" class="gps-status-notice" style="display: none; margin-bottom: 1rem;"></div>
+
+          <!-- Interactive Food Explorer Main Layout (Split / Map / Grid) -->
+          <div class="food-explorer-layout layout-split" id="foodExplorerLayout">
+            
+            <!-- Dynamic Food Listings Grid / List Column -->
+            <div class="food-cards-column" id="foodCardsColumn">
+              <div class="food-cards-grid" id="foodListingsContainer">
+                <!-- Populated dynamically via js/app.js -->
+              </div>
+            </div>
+
+            <!-- Leaflet.js Live Food Surplus Map Column -->
+            <div class="food-map-column" id="foodMapColumn">
+              <div class="food-map-wrapper">
+                
+                <!-- Map Header Controls -->
+                <div class="food-map-header">
+                  <div class="map-live-tag">
+                    <span class="live-clock-pulse"></span>
+                    <strong>Live Food Surplus Radar</strong>
+                  </div>
+
+                  <div class="map-actions-bar">
+                    <button type="button" class="btn btn-outline btn-xs" id="btnMapCenterUser" title="Center map on your current GPS location">
+                      <span>🎯</span> My GPS
+                    </button>
+                    <button type="button" class="btn btn-outline btn-xs" id="btnMapFitAll" title="Fit all active food markers on map">
+                      <span>🔍</span> Fit All
+                    </button>
+                    <div class="map-radius-wrap">
+                      <select id="mapRadiusFilter" class="map-radius-dropdown" aria-label="Filter listings by distance radius">
+                        <option value="all">🌐 Any Distance</option>
+                        <option value="3">&lt; 3 km (Walking/Bike)</option>
+                        <option value="5">&lt; 5 km (Short Drive)</option>
+                        <option value="10">&lt; 10 km (Metro Area)</option>
+                        <option value="25">&lt; 25 km (Regional)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Leaflet Map Canvas -->
+                <div id="foodListingsMap" class="food-leaflet-map-canvas" role="region" aria-label="Interactive Food Surplus Map"></div>
+
+                <!-- Live Map Legend -->
+                <div class="food-map-legend">
+                  <div class="legend-chip"><span class="legend-dot dot-user"></span> 🔵 You</div>
+                  <div class="legend-chip"><span class="legend-dot dot-fresh"></span> 🟢 Fresh (&gt;6h)</div>
+                  <div class="legend-chip"><span class="legend-dot dot-warning"></span> 🟡 Soon (1-6h)</div>
+                  <div class="legend-chip"><span class="legend-dot dot-critical"></span> 🔴 Urgent (&lt;1h)</div>
+                  <div class="legend-chip"><span class="legend-dot dot-freezer"></span> ❄️ Freezer Hub</div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VIEW 3: #view-donate (Donation Form, QR Passport, CSR Summary)
+         ---------------------------------------------------------------------- -->
+    <section id="view-donate" class="app-view" aria-label="Donate Food Section">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge" data-i18n="badgeFoodSharing">Food Sharing</span>
+            <h2 class="section-title" data-i18n="titleDonateFood">Donate Surplus Food &amp; Generate QR Passport</h2>
+            <p class="section-description" data-i18n="descDonateFood">
+              Submit surplus food details to immediately produce a dynamic scannable QR Safety Passport, printable packaging label, and CSR audit record.
+            </p>
+          </div>
+
+          <div class="donation-layout-grid">
+            
+            <!-- Donation Form Wrapper -->
+            <div class="donation-form-wrapper" id="donationFormContainer">
+              <div id="donationFormFeedback"></div>
+
+              <form id="donationForm" novalidate>
+                
+                <div class="form-row-2col">
+                  <!-- Donor Name -->
+                  <div class="form-group">
+                    <label for="donorName" class="form-label">
+                      <span data-i18n="lblDonorName">Donor / Restaurant Name</span> <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      id="donorName" 
+                      class="form-control" 
+                      placeholder="e.g. Green Olive Bistro or Hotel Grand" 
+                      required>
+                  </div>
+
+                  <!-- Food Item Name -->
+                  <div class="form-group">
+                    <label for="foodName" class="form-label">
+                      <span data-i18n="lblFoodItemName">Food Item Name</span> <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      id="foodName" 
+                      class="form-control" 
+                      placeholder="e.g. Vegetable Biryani or Artisan Bread" 
+                      required>
+                  </div>
+                </div>
+
+                <div class="form-row-2col">
+                  <!-- Category Dropdown -->
+                  <div class="form-group">
+                    <label for="category" class="form-label">
+                      <span data-i18n="lblCategory">Category</span> <span class="required-star">*</span>
+                    </label>
+                    <select id="category" class="form-control" required>
+                      <option value="" disabled selected>-- Select Category --</option>
+                      <option value="Cooked Meals">🍲 Cooked Meals</option>
+                      <option value="Raw Produce">🥦 Raw Produce</option>
+                      <option value="Bakery">🥖 Bakery</option>
+                      <option value="Packaged">📦 Packaged</option>
+                    </select>
+                  </div>
+
+                  <!-- Quantity Description -->
+                  <div class="form-group">
+                    <label for="quantity" class="form-label">
+                      <span data-i18n="lblQuantityDesc">Quantity Description</span> <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      id="quantity" 
+                      class="form-control" 
+                      placeholder="e.g. 15 meal boxes or 20 kg crate" 
+                      required>
+                  </div>
+                </div>
+
+                <div class="form-row-2col">
+                  <!-- Estimated Weight in kg -->
+                  <div class="form-group">
+                    <label for="weightKg" class="form-label">
+                      <span data-i18n="lblWeightKg">Estimated Weight (kg)</span> <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="number" 
+                      id="weightKg" 
+                      class="form-control" 
+                      placeholder="e.g. 8.5" 
+                      min="0.1" 
+                      max="1000" 
+                      step="0.1" 
+                      required>
+                    <p class="form-helper-text">Used to compute live carbon offset &amp; tax CSR reports.</p>
+                  </div>
+
+                  <!-- Target Refrigerator (Populated from LocalStorage) -->
+                  <div class="form-group">
+                    <label for="targetFridge" class="form-label">
+                      <span data-i18n="lblTargetFridge">Target Refrigerator / Freezer</span> <span class="required-star">*</span>
+                    </label>
+                    <select id="targetFridge" class="form-control" required>
+                      <option value="" disabled selected>Loading community fridges...</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row-2col">
+                  <!-- Prepared Date & Time -->
+                  <div class="form-group">
+                    <label for="prepTime" class="form-label">
+                      <span data-i18n="lblPrepTime">Prepared Date &amp; Time</span> <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="datetime-local" 
+                      id="prepTime" 
+                      class="form-control" 
+                      required>
+                  </div>
+
+                  <!-- Collection Deadline -->
+                  <div class="form-group">
+                    <label for="expiryDeadline" class="form-label">
+                      <span data-i18n="lblDeadline">Collection Deadline</span> <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="datetime-local" 
+                      id="expiryDeadline" 
+                      class="form-control" 
+                      required>
+                    <p class="form-helper-text">Live countdown timer will monitor urgency automatically.</p>
+                  </div>
+                </div>
+
+                <div class="form-row-2col">
+                  <!-- Photo Upload (Base64 File Reader) -->
+                  <div class="form-group">
+                    <label for="foodPhotoInput" class="form-label">
+                      <span data-i18n="lblPhotoUpload">Food Photo (Optional)</span>
+                    </label>
+                    <div class="img-upload-dropzone" id="imgDropzone">
+                      <input 
+                        type="file" 
+                        id="foodPhotoInput" 
+                        class="img-file-input" 
+                        accept="image/*">
+                      <div class="img-upload-prompt" id="imgUploadPrompt">
+                        <span>📷</span>
+                        <strong>Choose an image or drag &amp; drop</strong>
+                        <small>PNG, JPG, WebP up to 4MB</small>
+                      </div>
+                      <div class="img-preview-wrap" id="imgPreviewWrap" style="display: none;">
+                        <img id="imgPreview" src="" alt="Food Preview">
+                        <button type="button" class="btn-remove-img" id="btnRemoveImg" title="Remove image">&times;</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Contact Number & Notes -->
+                  <div class="form-group">
+                    <label for="contactNumber" class="form-label">
+                      <span data-i18n="lblContactPhone">Donor Contact Phone</span>
+                    </label>
+                    <input 
+                      type="tel" 
+                      id="contactNumber" 
+                      class="form-control" 
+                      placeholder="e.g. +1 (555) 019-2834">
+                    
+                    <label for="allergens" class="form-label" style="margin-top: 1rem;">
+                      <span data-i18n="lblAllergens">Allergens &amp; Storage Instructions</span>
+                    </label>
+                    <textarea 
+                      id="allergens" 
+                      class="form-control" 
+                      rows="2" 
+                      placeholder="e.g. Dairy, Nuts. Must maintain strict cold-chain &le; 4°C..."></textarea>
+                  </div>
+                </div>
+
+                <!-- Mandatory Food Safety Checkboxes -->
+                <div class="safety-declaration-box">
+                  <h4>🛡️ <span data-i18n="lblSafetyHeading">Mandatory Food Safety Declaration</span></h4>
+                  <p data-i18n="lblSafetySub">To ensure community health, verify the following food safety criteria:</p>
+                  
+                  <div class="safety-checkboxes-list">
+                    <label class="safety-checkbox-item">
+                      <input type="checkbox" id="safetyTempCheck" required>
+                      <span data-i18n="chkSafetyTemp">I certify this food was prepared hygienically and maintained at safe temperatures (&le; 4&deg;C for chilled or &ge; 60&deg;C for hot foods).</span>
+                    </label>
+
+                    <label class="safety-checkbox-item">
+                      <input type="checkbox" id="safetyPackagingCheck" required>
+                      <span data-i18n="chkSafetyPack">Containers and packaging are clean, intact, food-grade, and securely sealed.</span>
+                    </label>
+
+                    <label class="safety-checkbox-item">
+                      <input type="checkbox" id="safetyFreshnessCheck" required>
+                      <span data-i18n="chkSafetyFresh">No spoiled, contaminated, or past-use ingredients were included in this donation.</span>
+                    </label>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-full" style="margin-top: 1.5rem;">
+                  <span>🚀</span> <span data-i18n="btnPublishDonation">Publish Donation &amp; Generate QR Passport</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Donation Sidebar Guide & CSR Audit Generator -->
+            <div class="donation-sidebar-column">
+              
+              <!-- CSR Tax Statement Trigger Card -->
+              <div class="csr-promo-card">
+                <div class="csr-icon-badge">📄</div>
+                <h3>Corporate CSR &amp; Tax Exemption</h3>
+                <p>Generate certified monthly food rescue statements for Environmental, Social, and Governance (ESG) audit compliance.</p>
+                <button type="button" class="btn btn-outline btn-sm w-full" id="btnOpenCsrModal">
+                  <span>🏢</span> Generate CSR Statement
+                </button>
+              </div>
+
+              <!-- Safety Guidelines Card -->
+              <div class="donation-info-card" style="margin-top: 1.5rem;">
+                <h3>Food Safety Guidelines</h3>
+                <ul class="guideline-list">
+                  <li class="guideline-item">
+                    <span class="guideline-icon">❄️</span>
+                    <div>
+                      <strong>Temperature Control</strong>
+                      <p>Perishable cooked meals must be chilled below 4°C within 2 hours of prep.</p>
+                    </div>
+                  </li>
+                  <li class="guideline-item">
+                    <span class="guideline-icon">🏷️</span>
+                    <div>
+                      <strong>QR Safety Passport</strong>
+                      <p>Every donation gets a printable QR code label for transparent batch tracking.</p>
+                    </div>
+                  </li>
+                  <li class="guideline-item">
+                    <span class="guideline-icon">⚖️</span>
+                    <div>
+                      <strong>Good Samaritan Protection</strong>
+                      <p>Good-faith donations are protected under statutory Food Donation Acts.</p>
+                    </div>
+                  </li>
+                </ul>
+
+                <div style="text-align: center; margin-top: 1rem;">
+                  <a href="#fridges" class="btn btn-outline btn-sm w-full">View Fridge Locations &amp; Telemetry</a>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VIEW 4: #view-fridges (IoT Dual Stream, Load Cells, Telegram Alert Log)
+         ---------------------------------------------------------------------- -->
+    <section id="view-fridges" class="app-view" aria-label="Community Fridges Section">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge" data-i18n="badgeIotHardware">IoT Smart Hardware</span>
+            <h2 class="section-title" data-i18n="titleFridges">Community Refrigerator &amp; Deep Freezer Network (IoT Telemetry)</h2>
+            <p class="section-description" data-i18n="descFridges">
+              Live monitoring of temperature sensors, door security readouts, load-cell capacities, and simulated Telegram emergency dispatch notifications.
+            </p>
+          </div>
+
+          <!-- IoT Hardware Stream Control Toolbar -->
+          <div class="iot-control-toolbar">
+            <div class="iot-stream-status-group">
+              <div class="stream-pill" id="iotStreamIndicator">
+                <span class="stream-beacon live"></span>
+                <span id="iotStreamModeText">🔴 Live ESP8266 Stream (IP: 192.168.1.142)</span>
+              </div>
+              <span class="iot-sub-label">NodeMCU V3 WiFi Telemetry Channel</span>
+            </div>
+
+            <div class="iot-actions-group">
+              <button type="button" class="btn btn-outline btn-sm" id="btnToggleIotStream">
+                <span>🔄</span> <span id="btnToggleIotText">Switch to Simulated Stream</span>
+              </button>
+              <button type="button" class="btn btn-warning btn-sm" id="btnSimulateTempSpike" title="Simulate temperature breach > 8°C to test emergency alert logging">
+                <span>🚨</span> Trigger Temp Spike Test
+              </button>
+            </div>
+          </div>
+
+          <!-- Telegram Emergency Dispatch Alert Log -->
+          <div class="telegram-dispatch-log-card" id="telegramAlertLogCard">
+            <div class="telegram-log-header">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="telegram-icon">✈️</span>
+                <strong>Telegram Bot Emergency Dispatch Channel (@FoodRescueAlertBot)</strong>
+              </div>
+              <span class="telegram-badge">Webhook Active</span>
+            </div>
+            <div class="telegram-log-entries" id="telegramLogEntries">
+              <div class="telegram-entry">
+                <span class="entry-time">[00:30:15]</span>
+                <span class="entry-msg">🟢 <strong>System Heartbeat:</strong> All 4 community refrigerators operating within safe cold-chain baseline (&le; 4.0°C).</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fridge & Freezer Location Filter Toolbar -->
+          <div class="fridge-filter-section-wrapper">
+            <div class="food-filter-toolbar">
+              <div class="search-box-wrap" style="flex: 1 1 320px;">
+                <span class="search-icon-symbol" aria-hidden="true">🔍</span>
+                <input 
+                  type="search" 
+                  id="fridgeSearchInput" 
+                  class="form-control" 
+                  placeholder="Search freezers and fridges by area, name, or landmark..." 
+                  aria-label="Search community freezers and fridges">
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-outline btn-sm" id="btnSortFridgesGps">
+                  <span>📍</span> <span>Find Nearest Freezer / Fridge</span>
+                </button>
+                <a href="#donate" class="btn btn-primary btn-sm" data-i18n="btnStockFridge">Stock a Location</a>
+              </div>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="fridge-filter-pills-bar">
+              <button type="button" class="fridge-filter-pill active" data-filter="all">🌐 All Hubs (6)</button>
+              <button type="button" class="fridge-filter-pill" data-filter="freezer-only">❄️ Dedicated Deep Freezers (-18°C)</button>
+              <button type="button" class="fridge-filter-pill" data-filter="has-freezer">🧊 Dual Fridges &amp; Freezers</button>
+              <button type="button" class="fridge-filter-pill" data-filter="chiller-only">🥬 Chilled Pantries (2°C–4°C)</button>
+              <button type="button" class="fridge-filter-pill" data-filter="24-7">⏰ 24/7 Access Locations</button>
+            </div>
+          </div>
+
+          <div id="fridgesGpsAlert" class="gps-status-notice" style="display: none; margin-bottom: 1.5rem;"></div>
+
+          <!-- Fridges Grid Listings Container -->
+          <div class="fridges-grid" id="fridgesListingsContainer">
+            <!-- Populated dynamically via js/app.js -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VIEW 5: #view-volunteer (Multi-Stop Route Optimizer & Dispatch)
+         ---------------------------------------------------------------------- -->
+    <section id="view-volunteer" class="app-view" aria-label="Volunteer Section">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge" data-i18n="badgeMultiStop">Multi-Stop Route Dispatch</span>
+            <h2 class="section-title" data-i18n="titleVolunteer">Volunteer Rescue Dispatch &amp; Route Optimizer</h2>
+            <p class="section-description" data-i18n="descVolunteer">
+              Select multiple surplus pickups across the city and generate an automated, optimized waypoint route directly into Google Maps.
+            </p>
+          </div>
+
+          <!-- Batch Dispatch Control Bar -->
+          <div class="batch-dispatch-bar" id="batchDispatchBar">
+            <div class="batch-info">
+              <span class="batch-count-pill" id="selectedBatchCount">0 Selected for Batch Route</span>
+              <p>Check 2 or more pickup items below to compile an optimized multi-stop collection route.</p>
+            </div>
+            <div class="batch-actions">
+              <button type="button" class="btn btn-secondary btn-sm" id="btnSelectAllBatches">Select All Active</button>
+              <button type="button" class="btn btn-primary btn-sm" id="btnOptimizeMultiStopRoute" disabled>
+                <span>⚡</span> Optimize Multi-Stop Route
+              </button>
+            </div>
+          </div>
+
+          <div class="volunteer-layout-grid" style="margin-top: 2rem;">
+            
+            <!-- Registration Form -->
+            <div class="volunteer-form-box">
+              <h3 data-i18n="titleVolunteerReg">Volunteer Driver Registration</h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                Sign up to join our on-demand community rescue driver roster.
+              </p>
+              
+              <div id="volunteerFeedback"></div>
+
+              <form id="volunteerForm" novalidate>
+                <div class="form-row-2col">
+                  <div class="form-group">
+                    <label for="volunteerName" class="form-label">
+                      Full Name <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      id="volunteerName" 
+                      class="form-control" 
+                      placeholder="e.g. Jordan Miller" 
+                      required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="volunteerPhone" class="form-label">
+                      Phone Number <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="tel" 
+                      id="volunteerPhone" 
+                      class="form-control" 
+                      placeholder="e.g. (555) 019-2834" 
+                      required>
+                  </div>
+                </div>
+
+                <div class="form-row-2col">
+                  <div class="form-group">
+                    <label for="volunteerEmail" class="form-label">
+                      Email Address <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="email" 
+                      id="volunteerEmail" 
+                      class="form-control" 
+                      placeholder="e.g. jordan@example.com" 
+                      required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="volunteerLocation" class="form-label">
+                      Preferred Neighborhood / Area <span class="required-star">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      id="volunteerLocation" 
+                      class="form-control" 
+                      placeholder="e.g. Downtown, Metro West, Riverside" 
+                      required>
+                  </div>
+                </div>
+
+                <!-- Volunteer Tasks -->
+                <div class="form-group">
+                  <label class="form-label">
+                    Select Activities You Want to Help With <span class="required-star">*</span>
+                  </label>
+                  
+                  <div class="tasks-checkbox-group">
+                    <label class="checkbox-label-card">
+                      <input type="checkbox" name="volunteerTasks" value="Food Pickup &amp; Transport" checked>
+                      <div>
+                        <strong>🚗 Multi-Stop Food Pickup &amp; Transport</strong>
+                        <p>Pick up bulk trays from restaurants &amp; bakeries and transport them with 4-digit PIN verification.</p>
+                      </div>
+                    </label>
+
+                    <label class="checkbox-label-card">
+                      <input type="checkbox" name="volunteerTasks" value="Fridge Maintenance &amp; Sanitization">
+                      <div>
+                        <strong>🧼 Fridge Maintenance &amp; Telemetry Audits</strong>
+                        <p>Check temperature logs, sanitize shelves, and ensure hygiene at local fridge hubs.</p>
+                      </div>
+                    </label>
+
+                    <label class="checkbox-label-card">
+                      <input type="checkbox" name="volunteerTasks" value="Community Distribution &amp; Outreach">
+                      <div>
+                        <strong>📦 Community Distribution &amp; Outreach</strong>
+                        <p>Help pack meal kits, guide visitors, and spread awareness to local food businesses.</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-full" style="margin-top: 1rem;">
+                  <span>🤝</span> Complete Volunteer Registration
+                </button>
+              </form>
+            </div>
+
+            <!-- PIN Drop-Off Verification Box -->
+            <div class="volunteer-impact-box">
+              <span class="section-badge">Drop-Off Confirmation</span>
+              <h3 style="font-size: 1.3rem; margin-top: 0.5rem;">🔑 Confirm Fridge Drop-off</h3>
+              <p style="color: var(--text-muted); font-size: 0.92rem; margin-top: 0.4rem;">
+                Volunteers or guardians: enter the 4-digit PIN generated during pickup to confirm safe delivery at the community fridge.
+              </p>
+
+              <form id="volunteerDropoffPinForm" style="margin-top: 1.25rem;">
+                <div class="form-group">
+                  <label for="dropoffDonationSelect" class="form-label">Active In-Transit Delivery <span class="required-star">*</span></label>
+                  <select id="dropoffDonationSelect" class="form-control" required>
+                    <!-- Populated dynamically via js/app.js -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="dropoffPinInput" class="form-label">4-Digit Verification PIN <span class="required-star">*</span></label>
+                  <input type="text" id="dropoffPinInput" class="form-control pin-input-box" placeholder="####" maxlength="4" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full" style="margin-top: 0.5rem;">
+                  <span>✓</span> Confirm Drop-off (Mark Delivered)
+                </button>
+              </form>
+            </div>
+
+          </div>
+
+          <!-- Live Rescue Dispatch Board -->
+          <div class="dispatch-board-section" style="margin-top: 3.5rem;">
+            <div class="section-header">
+              <span class="section-badge">Active Rescue Dispatch Board</span>
+              <h3 style="font-size: 1.75rem;">Surplus Food Batches Needing Volunteer Transport</h3>
+              <p style="color: var(--text-muted); margin-top: 0.25rem;">
+                Select items to include in a multi-stop rescue run or claim individual batches.
+              </p>
+            </div>
+
+            <div class="dispatch-board-grid" id="volunteerDispatchBoardContainer">
+              <!-- Populated via js/app.js -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VIEW 6: #view-contact (Contact & Emergency Rescue Support Hub)
+         ---------------------------------------------------------------------- -->
+    <section id="view-contact" class="app-view" aria-label="Contact Section">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge" data-i18n="badgeGetInTouch">Get In Touch</span>
+            <h2 class="section-title" data-i18n="titleContact">Contact &amp; Emergency Rescue Support</h2>
+            <p class="section-description" data-i18n="descContact">
+              Have surplus food ready for immediate rescue? Need fridge maintenance or have partnership questions? Our coordinators are here 24/7.
+            </p>
+          </div>
+
+          <!-- Emergency Hotline Cards -->
+          <div class="contact-cards-grid">
+            <div class="contact-channel-card highlight-channel">
+              <div class="channel-icon">🚨</div>
+              <div class="channel-info">
+                <span class="channel-tag">24/7 Immediate Response</span>
+                <h3>Emergency Rescue Hotline</h3>
+                <p>For urgent catering, hotel, or bulk surplus pickups needing collection within 2 hours.</p>
+                <div class="channel-actions">
+                  <a href="tel:+18005553663" class="contact-highlight-phone">📞 1-800-555-FOOD (3663)</a>
+                  <span class="channel-subtext">Toll-free • Available 24 hours / 7 days</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="contact-channel-card">
+              <div class="channel-icon">💬</div>
+              <div class="channel-info">
+                <span class="channel-tag">Quick Support</span>
+                <h3>Direct Email &amp; Dispatch</h3>
+                <p>For restaurant onboarding, corporate partnerships, press, or community fridge hosting inquiries.</p>
+                <div class="channel-actions">
+                  <a href="mailto:rescue@foodwastage.org" class="contact-link-pill">✉️ rescue@foodwastage.org</a>
+                  <span class="channel-subtext">Avg response time: &lt; 15 minutes</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="contact-channel-card">
+              <div class="channel-icon">🏢</div>
+              <div class="channel-info">
+                <span class="channel-tag">Central Hub</span>
+                <h3>Community Headquarters</h3>
+                <p>Civic Operations Center, 100 Metro Civic Center Way, Suite 400, Metro City.</p>
+                <div class="channel-actions">
+                  <span class="contact-link-pill">📍 Walk-in Hours: Mon–Sat, 8am – 8pm</span>
+                  <span class="channel-subtext">Drop-off containers &amp; volunteer check-in desk</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Regional Community Coordinators Directory -->
+          <div class="coordinators-section" style="margin-top: 3.5rem;">
+            <div class="section-header">
+              <span class="section-badge">Local Leads</span>
+              <h3 style="font-size: 1.75rem;">Neighborhood Refrigerator Coordinators</h3>
+              <p style="color: var(--text-muted); margin-top: 0.25rem;">
+                Connect directly with the guardian managing your local community pantry or refrigerator hub.
+              </p>
+            </div>
+
+            <div class="coordinators-grid">
+              <div class="coordinator-card">
+                <div class="coordinator-avatar">SJ</div>
+                <div class="coordinator-details">
+                  <h4>Sarah Jenkins</h4>
+                  <span class="coordinator-role">Downtown Civic District Lead</span>
+                  <p>Oversees City Center Fridge #1 &amp; Downtown restaurant partnerships.</p>
+                  <div class="coord-contact-links">
+                    <a href="tel:+15550192">📞 (555) 019-0192</a>
+                    <a href="mailto:sarah.j@foodwastage.org">✉️ sarah.j@foodwastage.org</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="coordinator-card">
+                <div class="coordinator-avatar">DR</div>
+                <div class="coordinator-details">
+                  <h4>David Ross</h4>
+                  <span class="coordinator-role">Green Park Hub Manager</span>
+                  <p>Oversees Green Park Deep Freezer #2 &amp; bakery pickup routes.</p>
+                  <div class="coord-contact-links">
+                    <a href="tel:+15550144">📞 (555) 019-0144</a>
+                    <a href="mailto:david.r@foodwastage.org">✉️ david.r@foodwastage.org</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="coordinator-card">
+                <div class="coordinator-avatar">AP</div>
+                <div class="coordinator-details">
+                  <h4>Amira Patel</h4>
+                  <span class="coordinator-role">Transit Concourse Coordinator</span>
+                  <p>Oversees Metro West Hub #3 &amp; volunteer driver dispatches.</p>
+                  <div class="coord-contact-links">
+                    <a href="tel:+15550188">📞 (555) 019-0188</a>
+                    <a href="mailto:amira.p@foodwastage.org">✉️ amira.p@foodwastage.org</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="coordinator-card">
+                <div class="coordinator-avatar">CM</div>
+                <div class="coordinator-details">
+                  <h4>Carlos Mendez</h4>
+                  <span class="coordinator-role">Riverside Commons Lead</span>
+                  <p>Oversees Riverside Smart Hub #4 &amp; fresh garden produce intake.</p>
+                  <div class="coord-contact-links">
+                    <a href="tel:+15550176">📞 (555) 019-0176</a>
+                    <a href="mailto:carlos.m@foodwastage.org">✉️ carlos.m@foodwastage.org</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Direct Interactive Contact Form & FAQ Layout -->
+          <div class="contact-form-layout" style="margin-top: 3.5rem;">
+            <div class="contact-form-box">
+              <h3>Send a Message or Request Food Assistance</h3>
+              <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem;">
+                Fill out the form below. A community coordinator will reach back promptly.
+              </p>
+
+              <form id="contactForm" novalidate>
+                <div class="form-row-2col">
+                  <div class="form-group">
+                    <label for="contactFullName" class="form-label">Full Name <span class="required-star">*</span></label>
+                    <input type="text" id="contactFullName" class="form-control" placeholder="e.g. Maya Lin" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="contactEmail" class="form-label">Email Address <span class="required-star">*</span></label>
+                    <input type="email" id="contactEmail" class="form-control" placeholder="e.g. maya@example.com" required>
+                  </div>
+                </div>
+
+                <div class="form-row-2col">
+                  <div class="form-group">
+                    <label for="contactPhone" class="form-label">Phone Number (Optional)</label>
+                    <input type="tel" id="contactPhone" class="form-control" placeholder="e.g. (555) 019-9944">
+                  </div>
+                  <div class="form-group">
+                    <label for="contactInquiryType" class="form-label">Topic / Purpose <span class="required-star">*</span></label>
+                    <select id="contactInquiryType" class="form-control" required>
+                      <option value="Urgent Food Rescue">🚨 Urgent Food Rescue Request</option>
+                      <option value="Restaurant / Donor Partnership">🍲 Restaurant / Donor Partnership</option>
+                      <option value="Volunteer Inquiries">🤝 Volunteer Inquiry</option>
+                      <option value="Fridge Maintenance &amp; Sanitization">🧼 Fridge Maintenance Alert</option>
+                      <option value="Host a New Community Fridge">🧊 Host a New Fridge/Freezer</option>
+                      <option value="General Community Inquiries">💬 General Inquiries</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="contactMessage" class="form-label">Your Message or Pickup Details <span class="required-star">*</span></label>
+                  <textarea id="contactMessage" class="form-control" rows="4" placeholder="Please provide location details, quantities, or specific questions..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-full" style="margin-top: 0.5rem;">
+                  <span>📨</span> Send Inquiry to Food Rescue Team
+                </button>
+              </form>
+            </div>
+
+            <!-- Quick FAQ / Support Card -->
+            <div class="contact-faq-box">
+              <h3>Frequently Asked Questions</h3>
+              
+              <div class="faq-accordion-list">
+                <div class="faq-item">
+                  <strong>❓ Is there any fee to collect or donate food?</strong>
+                  <p>Never. The Food Wastage network is 100% free, public, and powered by mutual community aid.</p>
+                </div>
+
+                <div class="faq-item">
+                  <strong>❓ How fast can volunteers pick up surplus catering?</strong>
+                  <p>Our average rescue dispatch response time is under 35 minutes for metro area donors.</p>
+                </div>
+
+                <div class="faq-item">
+                  <strong>❓ Are businesses protected from liability?</strong>
+                  <p>Yes. Under Good Samaritan legislation, donors acting in good faith are fully protected from liability.</p>
+                </div>
+
+                <div class="faq-item">
+                  <strong>❓ How do I host a community fridge at my business?</strong>
+                  <p>Contact our coordinator desk using this form. We provide the refrigerator, signage, and maintenance support!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VIEW 7: #view-admin (Admin Dashboard, CRUD, Add Fridge, CSV Export)
+         ---------------------------------------------------------------------- -->
+    <section id="view-admin" class="app-view" aria-label="Admin Portal Section">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge" data-i18n="badgeAdmin">Management Dashboard</span>
+            <h2 class="section-title" data-i18n="titleAdmin">Admin Management Portal</h2>
+            <p class="section-description" data-i18n="descAdmin">
+              Live operational metrics, donation audits, status modifications, custom freezer creation, and CSV data export.
+            </p>
+          </div>
+
+          <!-- 4 Platform Metric Summary Tiles -->
+          <div class="admin-metrics-grid">
+            <div class="admin-metric-card">
+              <div class="admin-metric-icon icon-green" aria-hidden="true">📦</div>
+              <div>
+                <div class="admin-metric-val" id="adminMetricTotal">0</div>
+                <div class="admin-metric-title">Total Donations</div>
+              </div>
+            </div>
+
+            <div class="admin-metric-card">
+              <div class="admin-metric-icon icon-blue" aria-hidden="true">🟢</div>
+              <div>
+                <div class="admin-metric-val" id="adminMetricActive">0</div>
+                <div class="admin-metric-title">Active Available</div>
+              </div>
+            </div>
+
+            <div class="admin-metric-card">
+              <div class="admin-metric-icon icon-amber" aria-hidden="true">🍽️</div>
+              <div>
+                <div class="admin-metric-val" id="adminMetricCompleted">0</div>
+                <div class="admin-metric-title">Collected Meals</div>
+              </div>
+            </div>
+
+            <div class="admin-metric-card">
+              <div class="admin-metric-icon icon-purple" aria-hidden="true">👥</div>
+              <div>
+                <div class="admin-metric-val" id="adminMetricVolunteers">0</div>
+                <div class="admin-metric-title">Registered Volunteers</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Donations Management Table -->
+          <div class="admin-table-wrapper" style="margin-top: 2rem;">
+            <div class="admin-table-header">
+              <div>
+                <h3>All Donation Listings (CRUD Management)</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem;">
+                  Audit listings, update status, expire batches, or delete records.
+                </p>
+              </div>
+
+              <div class="admin-actions-bar">
+                <button type="button" class="btn btn-primary btn-sm" id="exportDonationsCsvBtn">
+                  <span>📥</span> Export Data to CSV
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="purgeExpiredBtn">
+                  <span>🗑️</span> Purge Expired
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" id="resetDemoDataBtn">
+                  <span>🔄</span> Reset Demonstration Data
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table" aria-label="Donations audit table">
+                <thead>
+                  <tr>
+                    <th>Ref ID</th>
+                    <th>Food Item &amp; Weight</th>
+                    <th>Category</th>
+                    <th>Donor Name</th>
+                    <th>Target Refrigerator</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminDonationsTableBody">
+                  <!-- Populated via js/app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Add New Freezer Location Form -->
+          <div class="admin-table-wrapper" style="margin-top: 2.5rem;">
+            <div class="admin-table-header">
+              <div>
+                <h3>➕ Add New Refrigerator / Freezer Location</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem;">
+                  Register a new community pantry, smart chiller, or commercial freezer into the network.
+                </p>
+              </div>
+            </div>
+
+            <form id="addFridgeForm" style="margin-top: 1rem;" novalidate>
+              <div class="form-row-2col">
+                <div class="form-group">
+                  <label for="newFridgeName" class="form-label">Fridge/Freezer Name <span class="required-star">*</span></label>
+                  <input type="text" id="newFridgeName" class="form-control" placeholder="e.g. Eastside Community Freezer Hub" required>
+                </div>
+                <div class="form-group">
+                  <label for="newFridgeType" class="form-label">Unit Type <span class="required-star">*</span></label>
+                  <select id="newFridgeType" class="form-control" required>
+                    <option value="Commercial Double Door Fridge">Commercial Double Door Fridge</option>
+                    <option value="Deep Commercial Freezer (-18°C)">Deep Commercial Freezer (-18°C)</option>
+                    <option value="Pantry & Chiller Combo">Pantry &amp; Chiller Combo</option>
+                    <option value="Smart Monitored Refrigerator">Smart Monitored Refrigerator</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row-2col">
+                <div class="form-group">
+                  <label for="newFridgeAddress" class="form-label">Street Address <span class="required-star">*</span></label>
+                  <input type="text" id="newFridgeAddress" class="form-control" placeholder="e.g. 504 East Broadway" required>
+                </div>
+                <div class="form-group">
+                  <label for="newFridgeLandmark" class="form-label">Landmark / Gate <span class="required-star">*</span></label>
+                  <input type="text" id="newFridgeLandmark" class="form-control" placeholder="e.g. Outside Eastside Rec Center" required>
+                </div>
+              </div>
+
+              <div class="form-row-2col">
+                <div class="form-group">
+                  <label for="newFridgeHours" class="form-label">Operating Hours <span class="required-star">*</span></label>
+                  <input type="text" id="newFridgeHours" class="form-control" placeholder="e.g. 24/7 Open Access or 6 AM – 10 PM" required>
+                </div>
+                <div class="form-group">
+                  <label for="newFridgeContact" class="form-label">Guardian Contact <span class="required-star">*</span></label>
+                  <input type="text" id="newFridgeContact" class="form-control" placeholder="e.g. Maria Gonzalez (+1 555-0128)" required>
+                </div>
+              </div>
+
+              <div class="form-row-2col">
+                <div class="form-group">
+                  <label for="newFridgeLat" class="form-label">Latitude Coordinate (GPS)</label>
+                  <input type="number" step="any" id="newFridgeLat" class="form-control" placeholder="e.g. 40.7180">
+                </div>
+                <div class="form-group">
+                  <label for="newFridgeLng" class="form-label">Longitude Coordinate (GPS)</label>
+                  <input type="number" step="any" id="newFridgeLng" class="form-control" placeholder="e.g. -73.9850">
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">
+                <span>➕</span> Register Community Fridge / Freezer
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       3. Global Modals & Dialogs
+       ======================================================================== -->
+  
+  <!-- Food Safety & Dynamic QR Code Passport Modal -->
+  <div id="qrPassportModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content-box modal-lg">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="modal-icon-badge">🏷️</span>
+          <h3>Food Safety Passport &amp; Packaging Sticker</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeQrModalBtn">&times;</button>
+      </div>
+
+      <div class="modal-body" id="qrPassportBody">
+        <!-- Printable Packaging Label Wrapper -->
+        <div class="printable-passport-card" id="printablePassportCard">
+          <div class="passport-header-row">
+            <div class="passport-brand-stamp">
+              <span class="stamp-icon">🛡️</span>
+              <div>
+                <strong>FOOD RESCUE SAFETY PASSPORT</strong>
+                <small>Verified Safe Handling • Cold-Chain Compliance</small>
+              </div>
+            </div>
+            <span class="passport-id-badge" id="qrDonationIdTag">#DON_XXXX</span>
+          </div>
+
+          <div class="passport-main-grid">
+            <div class="passport-qr-wrapper">
+              <div id="qrcodeCanvas"></div>
+              <small>Scan with any phone camera for batch provenance</small>
+            </div>
+
+            <div class="passport-meta-list" id="qrPassportMetaList">
+              <!-- Injected dynamically via js/app.js -->
+            </div>
+          </div>
+
+          <div class="passport-safety-notice">
+            <span>❄️ Required Storage:</span> <strong id="qrStorageNote">Keep Chilled &le; 4°C</strong> | 
+            <span>⏳ Expiry:</span> <strong id="qrExpiryNote">2026-09-18 16:00</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-btn-group">
+        <button type="button" class="btn btn-outline btn-sm" id="closeQrPassportBtn">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnPrintQrLabel">
+          <span>🖨️</span> Print Packaging Safety Sticker
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-Stop Optimized Route Modal -->
+  <div id="multiStopRouteModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content-box modal-lg">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="modal-icon-badge">🗺️</span>
+          <h3>Optimized Multi-Stop Rescue Route</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeRouteModalBtn">&times;</button>
+      </div>
+
+      <div class="modal-body" id="multiStopRouteBody">
+        <!-- Injected dynamically via js/app.js -->
+      </div>
+
+      <div class="modal-btn-group">
+        <button type="button" class="btn btn-outline btn-sm" id="closeMultiStopBtn">Close</button>
+        <a id="btnLaunchGoogleMapsRoute" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+          <span>🚗</span> Open in Google Maps Navigation
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Corporate CSR & Tax Exemption Statement Modal -->
+  <div id="csrReportModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content-box modal-lg">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="modal-icon-badge">📄</span>
+          <h3>Corporate Social Responsibility (CSR) Audit Statement</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeCsrModalBtn">&times;</button>
+      </div>
+
+      <div class="modal-body" id="csrReportModalBody">
+        <div class="csr-certificate-card" id="printableCsrCertificate">
+          <div class="csr-cert-header">
+            <div>
+              <h2>OFFICIAL CERTIFICATE OF FOOD RESCUE &amp; ESG COMPLIANCE</h2>
+              <p>Issued by the Food Wastage &amp; Community Refrigerator Network</p>
+            </div>
+            <div class="csr-cert-badge">VERIFIED CSR</div>
+          </div>
+
+          <div class="csr-cert-meta">
+            <div><strong>Organization / Partner:</strong> <span id="csrOrgNameDisplay">All Corporate &amp; Bistro Donors</span></div>
+            <div><strong>Statement Period:</strong> <span id="csrPeriodDisplay">Current Fiscal Quarter (2026)</span></div>
+            <div><strong>Compliance Standard:</strong> Good Samaritan Act &amp; Municipal Zero-Waste Standards</div>
+          </div>
+
+          <div class="csr-summary-metrics-grid">
+            <div class="csr-metric-box">
+              <strong id="csrTotalDonationsCount">0</strong>
+              <small>Total Donations Rescued</small>
+            </div>
+            <div class="csr-metric-box">
+              <strong id="csrGrossWeightKg">0 kg</strong>
+              <small>Total Net Mass Diverted</small>
+            </div>
+            <div class="csr-metric-box">
+              <strong id="csrMealsProvidedCount">0</strong>
+              <small>Nutritious Meals Served</small>
+            </div>
+            <div class="csr-metric-box">
+              <strong id="csrCarbonOffsetKg">0 kg</strong>
+              <small>Verified CO₂e Offset</small>
+            </div>
+          </div>
+
+          <p class="csr-cert-legal">
+            This statement officially verifies that all surplus food commodities listed above were diverted from municipal landfills and distributed for non-profit community nourishment in accordance with public health protocols.
+          </p>
+
+          <div class="csr-cert-signature-row">
+            <div>
+              <div class="sig-line">Sarah Jenkins</div>
+              <small>Chief Operations Guardian</small>
+            </div>
+            <div>
+              <div class="sig-line" id="csrAuditTimestamp">2026-09-18</div>
+              <small>Official Verification Date</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-btn-group">
+        <button type="button" class="btn btn-outline btn-sm" id="closeCsrBtn">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnPrintCsrCertificate">
+          <span>🖨️</span> Print Official Statement
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Safe Handling Verification & Reservation Guidance Modal -->
+  <div id="safeCollectionModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content-box modal-lg">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="modal-icon-badge">🛡️</span>
+          <h3 data-i18n="modalSafeTitle">Safe Food Collection Verification</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeSafeModalBtn">&times;</button>
+      </div>
+      
+      <div class="modal-body" id="safeModalBody">
+        <!-- Injected dynamically via js/app.js -->
+      </div>
+      
+      <div class="modal-btn-group">
+        <button type="button" class="btn btn-outline btn-sm" id="cancelSafeModalBtn">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" id="confirmSafeCollectBtn">
+          <span>✓</span> Confirm &amp; Reserve Food
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Volunteer Pickup Dispatch & PIN Modal -->
+  <div id="transportClaimModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content-box">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="modal-icon-badge">🚗</span>
+          <h3>Volunteer Pickup Dispatch Ticket</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeTransportModalBtn">&times;</button>
+      </div>
+
+      <div class="modal-body" id="transportModalBody">
+        <!-- Injected dynamically via js/app.js -->
+      </div>
+
+      <div class="modal-btn-group">
+        <button type="button" class="btn btn-outline btn-sm" id="cancelTransportModalBtn">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" id="confirmTransportClaimBtn">Confirm Pickup Dispatch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       4. Footer
+       ======================================================================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <div class="footer-brand">
+          <a href="#home" class="brand-logo">
+            <span class="brand-icon-wrapper">
+          <img src="assets/logo.png" alt="Food Wastage Logo" class="brand-logo-img">
+        </span>
+            <span class="brand-text">Food Wastage</span>
+          </a>
+          <p>
+            A community-powered platform committed to rescuing surplus food, supporting local households, and preventing greenhouse emissions.
+          </p>
+        </div>
+
+        <div class="footer-column">
+          <h4>Explore</h4>
+          <ul class="footer-links">
+            <li><a href="#home">Home &amp; Calculator</a></li>
+            <li><a href="#find-food">Find Available Food</a></li>
+            <li><a href="#donate">Donate &amp; QR Safety</a></li>
+            <li><a href="#fridges">Fridges &amp; IoT Telemetry</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Contact &amp; Help</h4>
+          <ul class="footer-links">
+            <li><a href="#contact">24/7 Rescue Hotline</a></li>
+            <li><a href="#contact">Local Coordinators</a></li>
+            <li><a href="#volunteer">Volunteer Dispatch</a></li>
+            <li><a href="#admin">Admin Portal</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Community Pledge</h4>
+          <ul class="footer-contact-info">
+            <li>🌿 Zero Edible Food Wasted</li>
+            <li>🤝 Mutual Aid &amp; Dignity</li>
+            <li>📦 Safe Food Handling Verified</li>
+            <li>📞 Emergency Hotline: 1-800-555-FOOD</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-bottom-info">
+          <p>&copy; 2026 Food Wastage Platform. All rights reserved. Built with Pure HTML5, Vanilla CSS3 &amp; JavaScript.</p>
+        </div>
+        <div class="footer-live-clock-badge">
+          <span class="footer-live-dot" aria-hidden="true"></span>
+          <span>Platform Status: Operational as of <strong id="footerDateTimeDisplay">Loading...</strong></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       5. Application Logic Script
+       ======================================================================== -->
+  <script src="js/hero-3d.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Wastage | Share Food, Spread Hope</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7faf6;
+      color: #25372b;
+      line-height: 1.6;
+    }
+
+    header {
+      background: white;
+      padding: 18px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      border-bottom: 1px solid #e5eee5;
+    }
+
+    .logo {
+      color: #238348;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #25372b;
+      font-weight: bold;
+    }
+
+    .hero {
+      padding: 75px 7%;
+      background: #e6f5e9;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      align-items: center;
+      gap: 35px;
+    }
+
+    .hero h1 {
+      font-size: clamp(34px, 5vw, 55px);
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      margin-bottom: 25px;
+      color: #526557;
+      font-size: 17px;
+    }
+
+    .hero img {
+      width: 100%;
+      border-radius: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #238348;
+      color: white;
+      padding: 13px 22px;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    section {
+      padding: 55px 7%;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .section-title h2 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border: 1px solid #e2eae2;
+      border-radius: 14px;
+    }
+
+    .card h3 {
+      margin: 12px 0 8px;
+    }
+
+    .food-icon {
+      font-size: 40px;
+    }
+
+    .status {
+      color: #238348;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .form-section {
+      background: #e6f5e9;
+    }
+
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 14px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 5px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #bdcdbf;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+
+    form button {
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    #message {
+      margin-top: 15px;
+      color: #238348;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: #203c2b;
+      color: white;
+    }
+
+    @media (max-width: 700px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 45px 6%;
+      }
+
+      header {
+        padding: 18px 6%;
+      }
+
+      section {
+        padding: 40px 6%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">🥗 Food Wastage</div>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#food">Find Food</a>
+      <a href="#fridges">Fridges</a>
+      <a href="#donate">Donate</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div>
+        <h1>Share Food.<br>Spread Hope.</h1>
+
+        <p>
+          Help reduce food wastage by sharing extra food
+          with people who need it. Together, we can make
+          a difference in our community.
+        </p>
+
+        <a href="#food" class="btn">Find Available Food</a>
+      </div>
+
+      <img
+        src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80"
+        alt="Fresh vegetables and healthy food"
+      >
+    </section>
+
+    <section id="food">
+      <div class="section-title">
+        <h2>Available Food</h2>
+        <p>Example listings for the website demonstration.</p>
+      </div>
+
+      <div class="cards" id="foodList">
+        <article class="card">
+          <div class="food-icon">🍚</div>
+          <h3>Freshly Prepared Meals</h3>
+          <p>Quantity: 10 meal boxes</p>
+          <p>Location: Community Fridge A</p>
+          <p class="status">Example listing</p>
+        </article>
+
+        <article class="card">
+          <div class="food-icon">🍎</div>
+          <h3>Fresh Fruits</h3>
+          <p>Quantity: 5 kg</p>
+          <p>Location: Community Fridge B</p>
+          <p class="status">Example listing</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="fridges">
+      <div class="section-title">
+        <h2>Community Refrigerators</h2>
+        <p>Find a food collection point in your community.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="food-icon">🧊</div>
+          <h3>Community Fridge A</h3>
+          <p>Location: Demo Location A</p>
+          <p class="status">Example location</p>
+        </article>
+
+        <article class="card">
+          <div class="food-icon">🧊</div>
+          <h3>Community Fridge B</h3>
+          <p>Location: Demo Location B</p>
+          <p class="status">Example location</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="form-section" id="donate">
+      <div class="section-title">
+        <h2>Donate Food</h2>
+        <p>Restaurants and food donors can share their surplus food.</p>
+      </div>
+
+      <form id="donationForm">
+        <label for="donor">Restaurant or donor name</label>
+        <input id="donor" required>
+
+        <label for="foodName">Food name</label>
+        <input id="foodName" required>
+
+        <label for="quantity">Quantity</label>
+        <input id="quantity" placeholder="Example: 10 meal boxes" required>
+
+        <label for="location">Pickup location</label>
+        <input id="location" required>
+
+        <label for="expiry">Safe collection deadline</label>
+        <input id="expiry" type="datetime-local" required>
+
+        <label for="notes">Food details</label>
+        <textarea id="notes" rows="3"
+          placeholder="Ingredients, storage needs, and other details"></textarea>
+
+        <button class="btn" type="submit">Submit Donation</button>
+
+        <p id="message" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Food Wastage — Share food, reduce waste, help people.</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById("donationForm");
+    const foodList = document.getElementById("foodList");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const donor = document.getElementById("donor").value.trim();
+      const food = document.getElementById("foodName").value.trim();
+      const quantity = document.getElementById("quantity").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const deadline = document.getElementById("expiry").value;
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      if (new Date(deadline) <= new Date()) {
+        message.textContent = "Please enter a future collection deadline.";
+        return;
+      }
+
+      const card = document.createElement("article");
+      card.className = "card";
+
+      const icon = document.createElement("div");
+      icon.className = "food-icon";
+      icon.textContent = "🥗";
+
+      const heading = document.createElement("h3");
+      heading.textContent = food;
+
+      const quantityText = document.createElement("p");
+      quantityText.textContent = "Quantity: " + quantity;
+
+      const locationText = document.createElement("p");
+      locationText.textContent = "Location: " + location;
+
+      const donorText = document.createElement("p");
+      donorText.textContent = "Donor: " + donor;
+
+      const status = document.createElement("p");
+      status.className = "status";
+      status.textContent = "Demo submission — not verified";
+
+      card.append(icon, heading, quantityText,
+        locationText, donorText, status);
+
+      foodList.appendChild(card);
+
+      message.textContent =
+        "Demo donation added to the page. It has not been sent to a server.";
+
+      form.reset();
+    });
+  </script>
+
+</body>
+</html>

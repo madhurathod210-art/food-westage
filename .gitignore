@@ -1,0 +1,14 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node modules / Scratch
+node_modules/
+scratch/
