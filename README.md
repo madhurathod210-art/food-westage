@@ -1,4 +1,4 @@
-# 🍲 Food Wastage — Smart IoT-Connected Food Rescue Platform
+# 🍲 Food Bridge — Smart IoT-Connected Food Rescue Platform
 
 A modern, responsive web application connecting restaurants, grocers, caterers, volunteer drivers, and neighborhood community refrigerators/freezers equipped with live IoT telemetry to eliminate food waste and fight hunger.
 

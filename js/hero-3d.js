@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * Food Wastage - Multi-Scene 3D WebGL Engine (Three.js)
+ * Food Bridge - Multi-Scene 3D WebGL Engine (Three.js)
  * Features:
  * 1. Full-Page 3D Background with Floating Rescued Food & Mouse Click 3D Sparkle Bursts
  * 2. 4 Switchable 3D Hero Scenes:

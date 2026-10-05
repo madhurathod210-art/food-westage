@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Food Wastage | Share Food, Spread Hope</title>
+  <title>Food Bridge | Share Food, Spread Hope</title>
 
   <style>
     * {
@@ -192,7 +192,7 @@
 <body>
 
   <header>
-    <div class="logo">🥗 Food Wastage</div>
+    <div class="logo">🥗 Food Bridge</div>
 
     <nav>
       <a href="#home">Home</a>
@@ -208,7 +208,7 @@
         <h1>Share Food.<br>Spread Hope.</h1>
 
         <p>
-          Help reduce food wastage by sharing extra food
+          Help reduce Food Bridge by sharing extra food
           with people who need it. Together, we can make
           a difference in our community.
         </p>
@@ -304,7 +304,7 @@
   </main>
 
   <footer>
-    <p>Food Wastage — Share food, reduce waste, help people.</p>
+    <p>Food Bridge — Share food, reduce waste, help people.</p>
   </footer>
 
   <script>

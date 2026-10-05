@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * Food Wastage - Master Application Layer (js/app.js)
+ * Food Bridge - Master Application Layer (js/app.js)
  * Pure Vanilla JavaScript (ES6+), Vanilla-Tilt.js, QRCode.js (CDN)
  * ==============================================================================
  * Modules:
@@ -68,7 +68,7 @@
   // ============================================================================
     const TRANSLATIONS = {
     en: {
-      brandName: 'Food Wastage',
+      brandName: 'Food Bridge',
       navHome: 'Home',
       navFindFood: 'Find Food',
       navDonate: 'Donate',
